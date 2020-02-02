@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 29
     defaultConfig {
         applicationId "org.anasthase.androidseekbarpreference.demo"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 29
         versionCode 2
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,19 +20,20 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.android.support:support-vector-drawable:24.2.0'
 
-    compile('com.mikepenz:aboutlibraries:5.8.1@aar') {
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support:support-v4:27.0.0'
+    implementation 'com.android.support:support-vector-drawable:27.0.0'
+
+    implementation('com.mikepenz:aboutlibraries:5.8.1@aar') {
         transitive = true
     }
 
-    testCompile 'junit:junit:4.12'
-    compile project(':android-seekbar-preference')
+    testImplementation 'junit:junit:4.13'
+    implementation project(':android-seekbar-preference')
 }
