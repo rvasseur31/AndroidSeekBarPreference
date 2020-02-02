@@ -18,20 +18,20 @@
 
 package org.anasthase.androidseekbarpreference;
 
-import java.util.IllegalFormatException;
-
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceViewHolder;
+
+import java.util.IllegalFormatException;
 
 /**
  * <p>A preference which display a SeekBar, and store the value as <code>int</code>.</p>
@@ -154,9 +154,61 @@ public class SeekBarPreference extends Preference {
 
 		mSteppedMinValue = Math.round(mMinValue / mStepValue);
 		mSteppedMaxValue = Math.round(mMaxValue / mStepValue);
-	}
 
-	@Override
+        this.setLayoutResource(R.layout.seekbar_preference);
+    }
+
+    @Override
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        holder.itemView.setClickable(false);
+        mContainer = holder.itemView;
+
+        mTitle = mContainer.findViewById(R.id.SeekBarPreferenceTitle);
+        mTitle.setText(getTitle());
+
+        mSummary = mContainer.findViewById(R.id.SeekBarPreferenceSummary);
+        if (!TextUtils.isEmpty(getSummary())) {
+            mSummary.setText(getSummary());
+        } else {
+            mSummary.setVisibility(View.GONE);
+        }
+
+        mValue = mContainer.findViewById(R.id.SeekBarPreferenceValue);
+
+        mSeekBar = mContainer.findViewById(R.id.SeekBarPreferenceSeekBar);
+        mSeekBar.setMax(mSteppedMaxValue - mSteppedMinValue);
+
+        setValue(PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(getKey(), mDefaultValue));
+
+        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (mListener != null) {
+                    mListener.onStopTrackingTouch(seekBar);
+                }
+
+                saveValue();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if (mListener != null) {
+                    mListener.onStartTrackingTouch(seekBar);
+                }
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (mListener != null) {
+                    mListener.onProgressChanged(seekBar, getValue(), fromUser);
+                }
+                updateDisplay(progress);
+            }
+        });
+    }
+
+	/*@Override
 	protected View onCreateView(ViewGroup parent) {
 		if (mContainer == null) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -210,7 +262,7 @@ public class SeekBarPreference extends Preference {
 		}
 
 		return mContainer;
-	}
+	}*/
 
 	/**
 	 * Set a listener for events from the SeekBar.
@@ -285,7 +337,7 @@ public class SeekBarPreference extends Preference {
      * If <code>null</code>, the current value will not be displayed.
 	 * @param format The format, as a String.
 	 */
-	public void setFormat(String format) {
+    private void setFormat(String format) {
 		mFormat = format;
 		updateDisplay();
 	}
@@ -303,7 +355,7 @@ public class SeekBarPreference extends Preference {
 	 * Get the current value.
 	 * @return The current value.
 	 */
-	public int getValue() {
+    private int getValue() {
 		return (mSeekBar.getProgress() + mSteppedMinValue) * mStepValue;
 	}
 
@@ -311,7 +363,7 @@ public class SeekBarPreference extends Preference {
 	 * Set the current value.
 	 * @param value The current value.
 	 */
-	public void setValue(int value) {
+    private void setValue(int value) {
 		value = getBoundedValue(value) - mSteppedMinValue;
 
 		mSeekBar.setProgress(value);
