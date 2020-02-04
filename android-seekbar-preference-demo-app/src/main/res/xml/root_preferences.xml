@@ -71,10 +71,6 @@
         app:minValue="5"
         app:stepValue="5" />
 
-    <SwitchPreference
-        android:summary="@string/Preference6Summary"
-        android:title="@string/Preference6Title" />
-
     <org.anasthase.androidseekbarpreference.SeekBarPreference
         android:defaultValue="15"
         android:key="preference_6"
@@ -86,9 +82,5 @@
         app:maxValue="30"
         app:minValue="10"
         app:stepValue="1" />
-
-    <SwitchPreference
-        android:summary="@string/Preference6Summary"
-        android:title="@string/Preference6Title" />
 
 </PreferenceScreen>

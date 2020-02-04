@@ -432,7 +432,6 @@ public class SeekBarPreference extends Preference {
 	}
 
 	private void updateDisplay(int value) {
-
         if (!TextUtils.isEmpty(mFormat)) {
             mValue.setVisibility(View.VISIBLE);
 
@@ -451,6 +450,7 @@ public class SeekBarPreference extends Preference {
                 text = Integer.toString(value);
             }
 
+			text += " .";
             mValue.setText(text);
         } else {
             mValue.setVisibility(View.GONE);
